@@ -1,5 +1,6 @@
 package lotto;
 
+import java.util.NoSuchElementException;
 import lotto.domain.*;
 import lotto.util.NumberParser;
 import lotto.view.InputView;
@@ -28,6 +29,8 @@ public class Application {
         for (Lotto t : tickets) {
             ranks.add(matcher.match(t, winning));
         }
+        Result result = Result.of(ranks, tickets.size());
+        OutputView.printStats(result);
     }
 
     static PurchaseAmount readPurchaseAmountWithRetry() {
@@ -36,7 +39,10 @@ public class Application {
                 String input = InputView.readPurchaseAmount();
                 long value = Long.parseLong(input.trim());
                 return new PurchaseAmount(value);
-            } catch (Exception e) {
+            } catch (NoSuchElementException e) {
+                OutputView.printError(e.getMessage());
+                throw e;
+            } catch (IllegalArgumentException e) {
                 OutputView.printError(e.getMessage());
             }
         }
@@ -53,11 +59,17 @@ public class Application {
                         String bonusStr = InputView.readBonusNumber();
                         int bonus = Integer.parseInt(bonusStr.trim());
                         return new WinningNumbers(winning, bonus);
-                    } catch (Exception e) {
+                    } catch (NoSuchElementException e) {
+                        OutputView.printError(e.getMessage());
+                        throw e;
+                    } catch (IllegalArgumentException e) {
                         OutputView.printError(e.getMessage());
                     }
                 }
-            } catch (Exception e) {
+            } catch (NoSuchElementException e) {
+                OutputView.printError(e.getMessage());
+                throw e;
+            } catch (IllegalArgumentException e) {
                 OutputView.printError(e.getMessage());
             }
         }
