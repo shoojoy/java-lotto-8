@@ -38,8 +38,8 @@
  - [x] 생성자에서 개수=6, 범위 1~45, 중복 없음 검증
  - [x] 내부 번호 오름차순 정렬 및 불변화
  ### NumberParser
- - [ ] "1,2,3,4,5,6" → List<Integer> 변환(공백 trim, 숫자만 허용)
- - [ ] 포맷 오류 시 IllegalArgumentException("[ERROR] ...") 발생
+ - [x] "1,2,3,4,5,6" → List<Integer> 변환(공백 trim, 숫자만 허용)
+ - [x] 포맷 오류 시 IllegalArgumentException("[ERROR] ...") 발생
  ### 발행기
  - [ ] issue(n): Randoms.pickUniqueNumbersInRange(1,45,6)로 n장 생성
  - [ ] 생성된 리스트를 Lotto로 감싸 정렬/검증 일원화
