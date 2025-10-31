@@ -32,8 +32,8 @@
  - [x] 패키지 구성: lotto.domain, lotto.view, lotto.util, 시작점 Application
  - [x] 공용 상수 정의 (예: PRICE_PER_TICKET = 1000, MIN=1, MAX=45, COUNT=6)
  ### 구매 금액
- - [ ] 생성 시 1,000원 단위,양수 검증
- - [ ] count()로 발행 장수 반환 (amount / PRICE_PER_TICKET)
+ - [x] 생성 시 1,000원 단위,양수 검증
+ - [x] count()로 발행 장수 반환 (amount / PRICE_PER_TICKET)
  ### 티켓
  - [ ] 생성자에서 개수=6, 범위 1~45, 중복 없음 검증
  - [ ] 내부 번호 오름차순 정렬 및 불변화
