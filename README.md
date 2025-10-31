@@ -47,11 +47,11 @@
  - [x] 당첨 번호 6개는 Lotto 재사용(검증 공유)
  - [x] 보너스 1개: 범위 1~45, 당첨 번호와 중복 불가
  ### 등수 규칙
- - [ ] 상수/필드 정의: (matchCount, needBonus, prize)
+ - [x] 상수/필드 정의: (matchCount, needBonus, prize)
    - 1등(6,false, 2_000_000_000), 2등(5,true, 30_000_000), 3등(5,false, 1_500_000), 4등(4,false, 50_000), 5등(3,false, 5_000), MISS
- - [ ] of(int matchCount, boolean bonusMatched) 구현(조기 return, else/switch 금지)
+ - [x] of (int matchCount, boolean bonusMatched) 구현(조기 return, else/switch 금지)
  ### 매칭
- - [ ] match(Lotto ticket, WinningNumbers winning) 구현
+ - [ ] match (Lotto ticket, WinningNumbers winning) 구현
  ### 집계/수익률 
  - [ ] Map<Rank,Integer>로 등수별 개수 집계(MISS 제외 출력)
  - [ ] totalPrize = Σ(count*prize), totalCost = tickets*PRICE_PER_TICKET
