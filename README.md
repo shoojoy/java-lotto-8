@@ -41,9 +41,9 @@
  - [x] "1,2,3,4,5,6" → List<Integer> 변환(공백 trim, 숫자만 허용)
  - [x] 포맷 오류 시 IllegalArgumentException("[ERROR] ...") 발생
  ### 발행기
- - [ ] issue(n): Randoms.pickUniqueNumbersInRange(1,45,6)로 n장 생성
- - [ ] 생성된 리스트를 Lotto로 감싸 정렬/검증 일원화
- ### 당첨 정보
+ - [x] issue(n): Randoms.pickUniqueNumbersInRange(1,45,6)로 n장 생성
+ - [x] 생성된 리스트를 Lotto로 감싸 정렬/검증 일원화
+ ### 당첨 정보 
  - [ ] 당첨 번호 6개는 Lotto 재사용(검증 공유)
  - [ ] 보너스 1개: 범위 1~45, 당첨 번호와 중복 불가
  ### 등수 규칙
