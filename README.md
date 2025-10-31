@@ -53,9 +53,9 @@
  ### 매칭
  - [x] match (Lotto ticket, WinningNumbers winning) 구현
  ### 집계/수익률 
- - [ ] Map<Rank,Integer>로 등수별 개수 집계(MISS 제외 출력)
- - [ ] totalPrize = Σ(count*prize), totalCost = tickets*PRICE_PER_TICKET
- - [ ] yieldPercentageRounded() 구현: (totalPrize/totalCost*100) → 소수점 둘째 자리 반올림 후 한 자리 표시
+ - [x] Map<Rank,Integer>로 등수별 개수 집계(MISS 제외 출력)
+ - [x] totalPrize = Σ(count*prize), totalCost = tickets*PRICE_PER_TICKET
+ - [x] yieldPercentageRounded() 구현: (totalPrize/totalCost*100) → 소수점 둘째 자리 반올림 후 한 자리 표시
  ### 출력
  - [ ] 발행 결과 출력: N개를 구매했습니다. + 각 티켓 번호(오름차순)
  - [ ] 통계 표 포맷 출력
