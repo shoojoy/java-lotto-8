@@ -1,20 +1,35 @@
 package lotto;
 
-import lotto.domain.Lotto;
-import lotto.domain.PurchaseAmount;
-import lotto.domain.WinningNumbers;
+import lotto.domain.*;
 import lotto.util.NumberParser;
 import lotto.view.InputView;
 import lotto.view.OutputView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Application {
     public static void main(String[] args) {
         // TODO: 프로그램 구현
+        // 1) 구매 금액 입력/검증 -> 장수 계산
         PurchaseAmount amount = readPurchaseAmountWithRetry();
+        int count = amount.count();
+
+        // 2) 장수만큼 발행 -> 발행 결과 출력
+        List<Lotto> tickets = new LottoIssuer().issue(count);
+        OutputView.printIssued(tickets);
+
+        // 3) 당첨 번호 + 보너스 입력/검증
         WinningNumbers winning = readWinningWithRetry();
+
+        // 4) 모든 티켓 매칭 -> 집계 -> 통계/수익률 출력
+        LottoMatcher matcher = new LottoMatcher();
+        List<Rank> ranks = new ArrayList<>();
+        for (Lotto t : tickets) {
+            ranks.add(matcher.match(t, winning));
+        }
     }
+
     static PurchaseAmount readPurchaseAmountWithRetry() {
         while (true) {
             try {
@@ -32,18 +47,18 @@ public class Application {
             try {
                 String csv = InputView.readWinningNumbers();
                 List<Integer> numbers = NumberParser.parseCsvToIntegers(csv);
-                Lotto winning = new Lotto(numbers); // 개수/범위/중복 검증
+                Lotto winning = new Lotto(numbers);
                 while (true) {
                     try {
                         String bonusStr = InputView.readBonusNumber();
                         int bonus = Integer.parseInt(bonusStr.trim());
-                        return new WinningNumbers(winning, bonus); // 범위/중복 검증
+                        return new WinningNumbers(winning, bonus);
                     } catch (Exception e) {
-                        OutputView.printError(e.getMessage()); // 보너스 단계 재입력
+                        OutputView.printError(e.getMessage());
                     }
                 }
             } catch (Exception e) {
-                OutputView.printError(e.getMessage()); // 당첨 번호 단계 재입력
+                OutputView.printError(e.getMessage());
             }
         }
     }
