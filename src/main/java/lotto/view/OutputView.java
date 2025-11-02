@@ -7,13 +7,12 @@ import lotto.domain.Result;
 import java.util.List;
 
 public class OutputView {
-
     public static void printIssued(List<Lotto> tickets) {
         System.out.println(tickets.size() + "개를 구매했습니다.");
         for (Lotto t : tickets) {
             System.out.println(t.numbers());
         }
-        // 여기서는 마지막 공백 줄 출력 안 함
+        System.out.println(); // ← 티켓 출력 후 빈 줄
     }
 
     public static void printStats(Result result) {
@@ -25,13 +24,5 @@ public class OutputView {
         System.out.println("5개 일치, 보너스 볼 일치 (30,000,000원) - " + result.countOf(Rank.SECOND) + "개");
         System.out.println("6개 일치 (2,000,000,000원) - " + result.countOf(Rank.FIRST) + "개");
         System.out.println("총 수익률은 " + result.yieldPercentageRounded() + "입니다.");
-    }
-
-    public static void printError(String message) {
-        if (message != null && message.startsWith("[ERROR]")) {
-            System.out.println(message);
-            return;
-        }
-        System.out.println("[ERROR] " + message);
     }
 }

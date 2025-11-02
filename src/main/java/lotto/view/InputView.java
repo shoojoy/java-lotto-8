@@ -9,12 +9,14 @@ public class InputView {
     }
 
     public static String readWinningNumbers() {
-        System.out.println("당첨 번호를 입력해 주세요."); // ← 선행 \n 제거
+        System.out.println(); // ← 반드시 선행 빈 줄
+        System.out.println("당첨 번호를 입력해 주세요.");
         return Console.readLine();
     }
 
     public static String readBonusNumber() {
-        System.out.println("보너스 번호를 입력해 주세요."); // ← 선행 \n 제거
+        System.out.println(); // ← 반드시 선행 빈 줄
+        System.out.println("보너스 번호를 입력해 주세요.");
         return Console.readLine();
     }
 }
