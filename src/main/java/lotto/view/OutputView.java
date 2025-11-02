@@ -12,7 +12,7 @@ public class OutputView {
         for (Lotto t : tickets) {
             System.out.println(t.numbers());
         }
-        System.out.println(); // ← 티켓 출력 후 빈 줄
+        System.out.println();
     }
 
     public static void printStats(Result result) {
@@ -24,5 +24,13 @@ public class OutputView {
         System.out.println("5개 일치, 보너스 볼 일치 (30,000,000원) - " + result.countOf(Rank.SECOND) + "개");
         System.out.println("6개 일치 (2,000,000,000원) - " + result.countOf(Rank.FIRST) + "개");
         System.out.println("총 수익률은 " + result.yieldPercentageRounded() + "입니다.");
+    }
+
+    public static void printError(String message) {
+        if (message != null && message.startsWith("[ERROR]")) {
+            System.out.println(message);
+            return;
+        }
+        System.out.println("[ERROR] " + message);
     }
 }
