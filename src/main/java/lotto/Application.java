@@ -1,6 +1,5 @@
 package lotto;
 
-import java.util.NoSuchElementException;
 import lotto.domain.*;
 import lotto.util.NumberParser;
 import lotto.view.InputView;
@@ -11,19 +10,14 @@ import java.util.List;
 
 public class Application {
     public static void main(String[] args) {
-        // TODO: 프로그램 구현
-        // 1) 구매 금액 입력/검증 -> 장수 계산
         PurchaseAmount amount = readPurchaseAmountWithRetry();
         int count = amount.count();
 
-        // 2) 장수만큼 발행 -> 발행 결과 출력
         List<Lotto> tickets = new LottoIssuer().issue(count);
         OutputView.printIssued(tickets);
 
-        // 3) 당첨 번호 + 보너스 입력/검증
         WinningNumbers winning = readWinningWithRetry();
 
-        // 4) 모든 티켓 매칭 -> 집계 -> 통계/수익률 출력
         LottoMatcher matcher = new LottoMatcher();
         List<Rank> ranks = new ArrayList<>();
         for (Lotto t : tickets) {
@@ -35,14 +29,13 @@ public class Application {
 
     static PurchaseAmount readPurchaseAmountWithRetry() {
         while (true) {
+            String input = InputView.readPurchaseAmount();
             try {
-                String input = InputView.readPurchaseAmount();
                 long value = Long.parseLong(input.trim());
                 return new PurchaseAmount(value);
-            } catch (NoSuchElementException e) {
-                OutputView.printError(e.getMessage());
-                throw e;
-            } catch (IllegalArgumentException e) {
+            } catch (NumberFormatException e) {
+                OutputView.printError("[ERROR] 숫자만 입력할 수 있습니다.");
+            } catch (IllegalArgumentException e) { // 검증 실패(단위/양수 등)
                 OutputView.printError(e.getMessage());
             }
         }
@@ -50,25 +43,23 @@ public class Application {
 
     static WinningNumbers readWinningWithRetry() {
         while (true) {
+            String csv = InputView.readWinningNumbers();
             try {
-                String csv = InputView.readWinningNumbers();
                 List<Integer> numbers = NumberParser.parseCsvToIntegers(csv);
                 Lotto winning = new Lotto(numbers);
+
+                // 보너스 번호 재시도 루프
                 while (true) {
+                    String bonusStr = InputView.readBonusNumber();
                     try {
-                        String bonusStr = InputView.readBonusNumber();
                         int bonus = Integer.parseInt(bonusStr.trim());
                         return new WinningNumbers(winning, bonus);
-                    } catch (NoSuchElementException e) {
-                        OutputView.printError(e.getMessage());
-                        throw e;
+                    } catch (NumberFormatException e) {
+                        OutputView.printError("[ERROR] 숫자만 입력할 수 있습니다.");
                     } catch (IllegalArgumentException e) {
                         OutputView.printError(e.getMessage());
                     }
                 }
-            } catch (NoSuchElementException e) {
-                OutputView.printError(e.getMessage());
-                throw e;
             } catch (IllegalArgumentException e) {
                 OutputView.printError(e.getMessage());
             }

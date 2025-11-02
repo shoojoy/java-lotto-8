@@ -9,12 +9,11 @@ import java.util.List;
 public class OutputView {
 
     public static void printIssued(List<Lotto> tickets) {
-        System.out.println();
         System.out.println(tickets.size() + "개를 구매했습니다.");
         for (Lotto t : tickets) {
             System.out.println(t.numbers());
         }
-        System.out.println();
+        // 여기서는 마지막 공백 줄 출력 안 함
     }
 
     public static void printStats(Result result) {
