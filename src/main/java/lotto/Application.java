@@ -1,4 +1,3 @@
-// src/main/java/lotto/Application.java
 package lotto;
 
 import java.util.NoSuchElementException;
@@ -12,32 +11,39 @@ import java.util.List;
 
 public class Application {
     public static void main(String[] args) {
-        PurchaseAmount amount = readPurchaseAmountWithRetry();
-        int count = amount.count();
+        try {
+            PurchaseAmount amount = readPurchaseAmountWithRetry();
+            if (amount == null) return;
+            int count = amount.count();
 
-        List<Lotto> tickets = new LottoIssuer().issue(count);
-        OutputView.printIssued(tickets);
+            List<Lotto> tickets = new LottoIssuer().issue(count);
+            OutputView.printIssued(tickets);
 
-        WinningNumbers winning = readWinningWithRetry();
+            WinningNumbers winning = readWinningWithRetry();
+            if (winning == null) return;
 
-        LottoMatcher matcher = new LottoMatcher();
-        List<Rank> ranks = new ArrayList<>();
-        for (Lotto t : tickets) {
-            ranks.add(matcher.match(t, winning));
+            LottoMatcher matcher = new LottoMatcher();
+            List<Rank> ranks = new ArrayList<>();
+            for (Lotto t : tickets) {
+                ranks.add(matcher.match(t, winning));
+            }
+            Result result = Result.of(ranks, tickets.size());
+            OutputView.printStats(result);
+        } catch (java.util.NoSuchElementException ignore) {
         }
-        Result result = Result.of(ranks, tickets.size());
-        OutputView.printStats(result);
     }
 
     static PurchaseAmount readPurchaseAmountWithRetry() {
         while (true) {
+            String input;
             try {
-                String input = InputView.readPurchaseAmount();
+                input = InputView.readPurchaseAmount();
+            } catch (java.util.NoSuchElementException e) {
+                return null;
+            }
+            try {
                 long value = Long.parseLong(input.trim());
                 return new PurchaseAmount(value);
-            } catch (NoSuchElementException e) {
-                System.exit(0);
-                return null;
             } catch (NumberFormatException e) {
                 OutputView.printError("[ERROR] 숫자만 입력할 수 있습니다.");
             } catch (IllegalArgumentException e) {
@@ -51,20 +57,18 @@ public class Application {
             String csv;
             try {
                 csv = InputView.readWinningNumbers();
-            } catch (NoSuchElementException e) {
-                System.exit(0);
+            } catch (java.util.NoSuchElementException e) {
                 return null;
             }
             try {
-                List<Integer> numbers = NumberParser.parseCsvToIntegers(csv);
+                List<Integer> numbers = lotto.util.NumberParser.parseCsvToIntegers(csv);
                 Lotto winning = new Lotto(numbers);
-                // 보너스 번호 루프
+
                 while (true) {
                     String bonusStr;
                     try {
                         bonusStr = InputView.readBonusNumber();
-                    } catch (NoSuchElementException e) {
-                        System.exit(0);
+                    } catch (java.util.NoSuchElementException e) {
                         return null;
                     }
                     try {
