@@ -1,5 +1,7 @@
+// src/main/java/lotto/Application.java
 package lotto;
 
+import java.util.NoSuchElementException;
 import lotto.domain.*;
 import lotto.util.NumberParser;
 import lotto.view.InputView;
@@ -29,13 +31,16 @@ public class Application {
 
     static PurchaseAmount readPurchaseAmountWithRetry() {
         while (true) {
-            String input = InputView.readPurchaseAmount();
             try {
+                String input = InputView.readPurchaseAmount();
                 long value = Long.parseLong(input.trim());
                 return new PurchaseAmount(value);
+            } catch (NoSuchElementException e) {
+                System.exit(0);
+                return null;
             } catch (NumberFormatException e) {
                 OutputView.printError("[ERROR] 숫자만 입력할 수 있습니다.");
-            } catch (IllegalArgumentException e) { // 검증 실패(단위/양수 등)
+            } catch (IllegalArgumentException e) {
                 OutputView.printError(e.getMessage());
             }
         }
@@ -43,14 +48,25 @@ public class Application {
 
     static WinningNumbers readWinningWithRetry() {
         while (true) {
-            String csv = InputView.readWinningNumbers();
+            String csv;
+            try {
+                csv = InputView.readWinningNumbers();
+            } catch (NoSuchElementException e) {
+                System.exit(0);
+                return null;
+            }
             try {
                 List<Integer> numbers = NumberParser.parseCsvToIntegers(csv);
                 Lotto winning = new Lotto(numbers);
-
-                // 보너스 번호 재시도 루프
+                // 보너스 번호 루프
                 while (true) {
-                    String bonusStr = InputView.readBonusNumber();
+                    String bonusStr;
+                    try {
+                        bonusStr = InputView.readBonusNumber();
+                    } catch (NoSuchElementException e) {
+                        System.exit(0);
+                        return null;
+                    }
                     try {
                         int bonus = Integer.parseInt(bonusStr.trim());
                         return new WinningNumbers(winning, bonus);
