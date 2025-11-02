@@ -1,12 +1,6 @@
 package lotto;
 
-import lotto.domain.Lotto;
-import lotto.domain.LottoIssuer;
-import lotto.domain.LottoMatcher;
-import lotto.domain.PurchaseAmount;
-import lotto.domain.Rank;
-import lotto.domain.Result;
-import lotto.domain.WinningNumbers;
+import lotto.domain.*;
 import lotto.util.NumberParser;
 import lotto.view.InputView;
 import lotto.view.OutputView;
@@ -22,7 +16,7 @@ public class Application {
             PurchaseAmount amount = readPurchaseAmountWithRetry();
             if (amount == null) return;
 
-            List<Lotto> tickets = issueTickets(amount.count());
+            List<Lotto> tickets = new LottoIssuer().issue(amount.count());
             OutputView.printIssued(tickets);
 
             WinningNumbers winning = readWinningNumbersFlow();
@@ -34,27 +28,31 @@ public class Application {
         }
     }
 
-    private static List<Lotto> issueTickets(int count) {
-        return new LottoIssuer().issue(count);
-    }
-
     static PurchaseAmount readPurchaseAmountWithRetry() {
         while (true) {
-            String input;
-            try {
-                input = InputView.readPurchaseAmount();        // depth 1
-            } catch (NoSuchElementException e) {
-                return null;
-            }
+            String input = readLineOrNullForAmount();
+            if (input == null) return null;
 
-            try {
-                long value = Long.parseLong(input.trim());     // depth 2
-                return new PurchaseAmount(value);
-            } catch (NumberFormatException e) {
-                OutputView.printError("[ERROR] 숫자만 입력할 수 있습니다.");
-            } catch (IllegalArgumentException e) {
-                OutputView.printError(e.getMessage());
-            }
+            PurchaseAmount amt = toPurchaseAmount(input);
+            if (amt != null) return amt;
+        }
+    }
+
+    private static String readLineOrNullForAmount() {
+        try { return InputView.readPurchaseAmount(); }
+        catch (NoSuchElementException e) { return null; }
+    }
+
+    private static PurchaseAmount toPurchaseAmount(String input) {
+        try {
+            long value = Long.parseLong(input.trim());
+            return new PurchaseAmount(value);
+        } catch (NumberFormatException e) {
+            OutputView.printError("[ERROR] 숫자만 입력할 수 있습니다.");
+            return null;
+        } catch (IllegalArgumentException e) {
+            OutputView.printError(e.getMessage());
+            return null;
         }
     }
 
@@ -70,50 +68,62 @@ public class Application {
 
     private static Lotto readWinningLottoOnly() {
         while (true) {
-            String csv;
-            try {
-                csv = InputView.readWinningNumbers();          // depth 1
-            } catch (NoSuchElementException e) {
-                return null;
-            }
+            String csv = readLineOrNullForWinning();
+            if (csv == null) return null;
 
-            try {
-                List<Integer> numbers = NumberParser.parseCsvToIntegers(csv); // depth 2
-                return new Lotto(numbers);
-            } catch (IllegalArgumentException e) {
-                OutputView.printError(e.getMessage());
-            }
+            Lotto lotto = toWinningLotto(csv);
+            if (lotto != null) return lotto;
+        }
+    }
+
+    private static String readLineOrNullForWinning() {
+        try { return InputView.readWinningNumbers(); }
+        catch (NoSuchElementException e) { return null; }
+    }
+
+    private static Lotto toWinningLotto(String csv) {
+        try {
+            List<Integer> numbers = NumberParser.parseCsvToIntegers(csv);
+            return new Lotto(numbers);
+        } catch (IllegalArgumentException e) {
+            OutputView.printError(e.getMessage());
+            return null;
         }
     }
 
     private static Integer readBonusNumberOnly(Lotto winning) {
         while (true) {
-            String raw;
-            try {
-                raw = InputView.readBonusNumber();
-            } catch (NoSuchElementException e) {
-                return null;
-            }
+            String raw = readLineOrNullForBonus();
+            if (raw == null) return null;
 
-            try {
-                int bonus = Integer.parseInt(raw.trim());
-                new WinningNumbers(winning, bonus);
-                return bonus;
-            } catch (NumberFormatException e) {
-                OutputView.printError("[ERROR] 숫자만 입력할 수 있습니다.");
-            } catch (IllegalArgumentException e) {
-                OutputView.printError(e.getMessage());
-            }
+            Integer bonus = toBonusOrNull(winning, raw);
+            if (bonus != null) return bonus;
+        }
+    }
+
+    private static String readLineOrNullForBonus() {
+        try { return InputView.readBonusNumber(); }
+        catch (NoSuchElementException e) { return null; }
+    }
+
+    private static Integer toBonusOrNull(Lotto winning, String raw) {
+        try {
+            int bonus = Integer.parseInt(raw.trim());
+            new WinningNumbers(winning, bonus); // 검증 목적
+            return bonus;
+        } catch (NumberFormatException e) {
+            OutputView.printError("[ERROR] 숫자만 입력할 수 있습니다.");
+            return null;
+        } catch (IllegalArgumentException e) {
+            OutputView.printError(e.getMessage());
+            return null;
         }
     }
 
     private static Result matchAllAndSummarize(List<Lotto> tickets, WinningNumbers winning) {
         LottoMatcher matcher = new LottoMatcher();
         List<Rank> ranks = new ArrayList<>();
-
-        for (Lotto t : tickets) {
-            ranks.add(matcher.match(t, winning));
-        }
+        for (Lotto t : tickets) ranks.add(matcher.match(t, winning));
         return Result.of(ranks, tickets.size());
     }
 }
