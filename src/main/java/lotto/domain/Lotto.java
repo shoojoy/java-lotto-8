@@ -1,5 +1,6 @@
 package lotto.domain;
 
+import camp.nextstep.edu.missionutils.Randoms;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -17,7 +18,18 @@ public class Lotto {
         validate(numbers);
         List<Integer> copy = new ArrayList<>(numbers);
         Collections.sort(copy);
-        this.numbers = Collections.unmodifiableList(copy); // 불변화
+        this.numbers = Collections.unmodifiableList(copy);
+    }
+    // 여기 로또 안에서 부르면 자동으로 생성 되게끔
+
+    public static Lotto random() {
+        return new Lotto(
+                Randoms.pickUniqueNumbersInRange(MIN, MAX, COUNT)
+        );
+    }
+
+    public static boolean isValidNumber(int n) {
+        return n >= MIN && n <= MAX;
     }
 
     private void validate(List<Integer> numbers) {
@@ -35,13 +47,11 @@ public class Lotto {
         }
     }
 
-    // 번호 조회
     public List<Integer> numbers() {
         return numbers;
     }
 
-    // 보너스 매칭 등에서 사용
     public boolean contains(int n) {
-        return numbers.contains(n);
+         return numbers.contains(n);
     }
 }
