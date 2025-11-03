@@ -11,7 +11,7 @@ public class WinningNumbers {
     }
 
     private void validate(Lotto winning, int bonus) {
-        if (bonus < Lotto.MIN || bonus > Lotto.MAX) {
+        if (!Lotto.isValidNumber(bonus)) {
             throw new IllegalArgumentException("[ERROR] 보너스 번호는 1부터 45 사이의 숫자여야 합니다.");
         }
         if (winning.contains(bonus)) {
